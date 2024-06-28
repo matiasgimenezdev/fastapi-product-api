@@ -1,7 +1,7 @@
 from typing import Annotated
 from fastapi import APIRouter, HTTPException, Path, Query, status, Response
 from pydantic import ValidationError
-from data.mock_data import products
+from data.products import products
 from models.product import Product
 
 router = APIRouter(prefix="/api/product")
@@ -14,6 +14,7 @@ async def get_products():
     except Exception as exception:
         raise HTTPException(
             status_code=500, detail="Server error") from exception
+
 
 @ router.get("/page")
 async def get_products_page(limit: Annotated[int | None, Query(ge=0, le=20)] = 10, offset: Annotated[int | None, Query(ge=0)] = 0):

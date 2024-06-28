@@ -24,6 +24,12 @@
 fastapi dev src/server.py
 ```
 
+3. If you wish, you can run unit tests
+
+```sh
+pytest
+```
+
 ## TODO
 
 -   [ ] Refactor adding search function
