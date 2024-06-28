@@ -21,7 +21,7 @@
 2. Run the application.
 
 ```sh
-fastapi dev src/main.py
+fastapi dev src/server.py
 ```
 
 ## TODO
