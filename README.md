@@ -1,4 +1,4 @@
-# FastAPI demo
+# Product API: FastAPI demo
 
 ## Instructions for running the app on localhost
 
