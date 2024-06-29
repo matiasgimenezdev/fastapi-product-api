@@ -15,11 +15,10 @@ def test_status_endpoint():
 def test_get_products():
     response = client.get("/api/product")
 
-    # Verificar el código de estado
     assert response.status_code == 200
 
-    # Verificar la estructura de la respuesta JSON
     json_response = response.json()
+
     assert "status" in json_response
     assert "message" in json_response
     assert "data" in json_response
@@ -49,4 +48,59 @@ def test_get_product_by_id():
             "product_id": 1, "description": "Apple Macbook Pro M2",
             "price": 1200.0, "tax": 200.0, "stock": 5
         }
+    }
+
+
+def test_create_product():
+    response = client.post(
+        "/api/product",
+        json={
+            "product_id": 6,
+            "description": "New product",
+            "price": 1200.0,
+            "tax": 200.0,
+            "stock": 5
+        },
+    )
+
+    assert response.status_code == 201
+    assert response.json() == {
+        "status": 201,
+        "message": "Product 6 created",
+        "data": {
+            "product_id": 6,
+            "description": "New product",
+            "price": 1200.0,
+            "tax": 200.0,
+            "stock": 5
+        }
+    }
+
+
+def test_update_product():
+    response = client.put(
+        "/api/product",
+        json={
+            "product_id": 1,
+            "description": "Apple Macbook Pro M2",
+            "price": 1200.0,
+            "tax": 250.0,
+            "stock": 1
+        },
+    )
+
+    assert response.status_code == 200
+    assert response.json() == {
+        "status": 200,
+        "message": "Product 1 updated",
+    }
+
+
+def test_delete_product():
+    response = client.delete("/api/product/1")
+
+    assert response.status_code == 200
+    assert response.json() == {
+        "status": 200,
+        "message": "Product 1 deleted",
     }
