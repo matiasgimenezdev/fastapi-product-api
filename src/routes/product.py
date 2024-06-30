@@ -1,23 +1,32 @@
 from typing import Annotated
 from fastapi import APIRouter, HTTPException, Path, Query, status, Response
-from pydantic import ValidationError
 from data.products import products
 from models.product import Product
 
 router = APIRouter(prefix="/api/product")
 
 
-@ router.get("/")
-async def get_products():
+# @ router.get("/")
+# async def get_products():
+#     try:
+#         return {"status": 200, "message": f"{len(products)} products found", "data": products}
+#     except Exception as exception:
+#         raise HTTPException(
+#             status_code=500, detail="Server error") from exception
+
+
+@ router.get("/count")
+async def get_products_count():
     try:
-        return {"status": 200, "message": f"{len(products)} products found", "data": products}
+        total_products = len(products)
+        return {"status": 200, "message": f"{len(products)} products found", "data": total_products}
     except Exception as exception:
         raise HTTPException(
             status_code=500, detail="Server error") from exception
 
 
-@ router.get("/page")
-async def get_products_with_pagination(limit: Annotated[int | None, Query(ge=0, le=20)] = 10, offset: Annotated[int | None, Query(ge=0)] = 0):
+@ router.get("/")
+async def get_products(limit: Annotated[int | None, Query(ge=0, le=20)] = None, offset: Annotated[int | None, Query(ge=0)] = None):
     try:
         """
             Obtiene una lista de productos con paginación.
@@ -26,8 +35,11 @@ async def get_products_with_pagination(limit: Annotated[int | None, Query(ge=0, 
             - offset (int): Número de productos a skippear desde el principio. Default value = 0
             - limit (int): Número máximo de productos a devolver. Default value = 10
         """
-        product_list = products[offset: offset + limit]
-        return {"status": 200, "message": f"List of {limit} products with {offset} offset", "data": product_list}
+        if (offset != None and limit != None):
+            product_list = products[offset: offset + limit]
+            return {"status": 200, "message": f"List of {limit} products with {offset} offset", "data": product_list}
+        else:
+            return {"status": 200, "message": f"{len(products)} products found", "data": products}
     except Exception as exception:
         raise HTTPException(
             status_code=500, detail="Server error") from exception
