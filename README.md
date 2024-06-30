@@ -32,7 +32,6 @@ pytest
 
 ## TODO
 
--   [ ] Refactor adding search function
 -   [ ] Workflow for pylint + tests
 -   [ ] Deployment
 -   [ ] User auth
