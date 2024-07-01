@@ -1,5 +1,5 @@
 from typing import Annotated
-from fastapi import APIRouter, HTTPException, Path, Query, status, Response
+from fastapi import APIRouter, Depends, HTTPException, Path, Query, status, Response
 from data.products import products
 from models.product import Product
 
@@ -13,6 +13,10 @@ router = APIRouter(prefix="/api/product")
 #     except Exception as exception:
 #         raise HTTPException(
 #             status_code=500, detail="Server error") from exception
+
+# @ router.get("/test")
+# async def test(token: Annotated[str, Depends(oauth2_scheme)]):
+#     return {"token": token}
 
 
 @ router.get("/count")

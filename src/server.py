@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from routes import product
+from routes import product, user
 
 app = FastAPI()
 
@@ -18,6 +18,7 @@ app.add_middleware(
 )
 
 app.include_router(product.router)
+app.include_router(user.router)
 
 
 @app.get("/api/status")
