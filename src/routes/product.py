@@ -2,6 +2,7 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, HTTPException, Path, Query, status, Response
 from data.products import products
 from models.product import Product
+from auth.get_current_user import oauth2_scheme, get_current_user
 
 router = APIRouter(prefix="/api/product")
 
@@ -14,13 +15,9 @@ router = APIRouter(prefix="/api/product")
 #         raise HTTPException(
 #             status_code=500, detail="Server error") from exception
 
-# @ router.get("/test")
-# async def test(token: Annotated[str, Depends(oauth2_scheme)]):
-#     return {"token": token}
-
 
 @ router.get("/count")
-async def get_products_count():
+async def get_products_count(token: Annotated[str, Depends(oauth2_scheme)]):
     try:
         total_products = len(products)
         return {"status": 200, "message": f"{len(products)} products found", "data": total_products}
@@ -30,7 +27,7 @@ async def get_products_count():
 
 
 @ router.get("/")
-async def get_products(limit: Annotated[int | None, Query(ge=0, le=20)] = None, offset: Annotated[int | None, Query(ge=0)] = None):
+async def get_products(token: Annotated[str, Depends(oauth2_scheme)], limit: Annotated[int | None, Query(ge=0, le=20)] = None, offset: Annotated[int | None, Query(ge=0)] = None):
     try:
         """
             Obtiene una lista de productos con paginación.
@@ -50,7 +47,7 @@ async def get_products(limit: Annotated[int | None, Query(ge=0, le=20)] = None, 
 
 
 @ router.get("/{product_id}")
-async def get_product_by_id(product_id: Annotated[int, Path(title="The ID of the product to get")], response: Response):
+async def get_product_by_id(token: Annotated[str, Depends(oauth2_scheme)], product_id: Annotated[int, Path(title="The ID of the product to get")], response: Response):
     try:
         product_index = search_product(product_id)
         if (product_index == -1):
@@ -65,7 +62,7 @@ async def get_product_by_id(product_id: Annotated[int, Path(title="The ID of the
 
 
 @router.post("/")
-async def create_product(new_product: Product, response: Response):
+async def create_product(token: Annotated[str, Depends(oauth2_scheme)], new_product: Product, response: Response):
     try:
         product_index = search_product(new_product.product_id)
 
@@ -82,7 +79,7 @@ async def create_product(new_product: Product, response: Response):
 
 
 @router.put("/")
-async def update_product(updated_product: Product, response: Response):
+async def update_product(token: Annotated[str, Depends(oauth2_scheme)], updated_product: Product, response: Response):
     try:
         product_index = search_product(updated_product.product_id)
         if (product_index < 0):
@@ -97,7 +94,7 @@ async def update_product(updated_product: Product, response: Response):
 
 
 @ router.delete("/{product_id}")
-async def delete_product(product_id: Annotated[int, Path(title="The ID of the product to delete")], response: Response):
+async def delete_product(token: Annotated[str, Depends(oauth2_scheme)], product_id: Annotated[int, Path(title="The ID of the product to delete")], response: Response):
     try:
         product_index = search_product(product_id)
 
@@ -109,7 +106,6 @@ async def delete_product(product_id: Annotated[int, Path(title="The ID of the pr
         return {"status": 200, "message": f"Product {product_id} deleted"}
 
     except Exception as exception:
-        return {"message": f"{exception}"}
         raise HTTPException(
             status_code=500, detail="Server error") from exception
 

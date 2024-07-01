@@ -34,4 +34,3 @@ pytest
 
 -   [ ] Workflow for pylint + tests
 -   [ ] Deployment
--   [ ] User auth
