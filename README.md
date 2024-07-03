@@ -29,8 +29,3 @@ fastapi dev src/server.py
 ```sh
 pytest
 ```
-
-## TODO
-
--   [ ] Workflow for pylint + tests
--   [ ] Deployment
